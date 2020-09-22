@@ -1,16 +1,19 @@
+terraform {
+  backend "s3" {}
+}
+
 ###################################################
 # EC2 - Test Instance
 
 resource "aws_instance" "this" {
-  ami                    = var.admin_node_base_ami_id
-  instance_type          = var.admin_node_instance_type
-  subnet_id              = element(var.ocp3_subnet_ids, count.index)
+  ami                    = var.ami_id
+  instance_type          = var.instance_type
+  subnet_id              = element(var.subnet_id, 0)
   vpc_security_group_ids = [aws_security_group.this.id]
-  iam_instance_profile   = var.iam_instance_role_name
-  key_name               = var.ssh_keypair_name
+  iam_instance_profile   = var.iam_role_name
+  key_name               = var.ssh_key_name
 
   tags = merge(
-    var.tags,
     {
       "Name" = "Test-Instance atlantis pull request"
     },
@@ -39,7 +42,7 @@ resource "aws_security_group_rule" "this" {
 }
 
 resource "aws_security_group_rule" "addtional_rule" {
-  count                    = var.enabled_fw_ports[1] ? 1 : 0
+  count                    = length(var.enabled_fw_ports) > 1 ? 1 : 0
   type                     = "ingress"
   from_port                = element(var.enabled_fw_ports, 1)
   to_port                  = element(var.enabled_fw_ports, 1)

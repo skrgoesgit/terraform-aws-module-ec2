@@ -1,10 +1,7 @@
-ariable "ocp3_subnet_ids" {
-  9   type = list(string)
- 10 }
- 11
- 12 variable "internal_subnet_ids" {
- 13   type = list(string)
- 14 }
+
+variable "vpc_id" {
+  type = string
+}
 
 variable "ami_id" {
   type = string
@@ -15,7 +12,7 @@ variable "instance_type" {
 }
 
 variable "subnet_id" {
-  type = string
+  type = list(string)
 }
 
 variable "ssh_key_name" {
@@ -23,6 +20,10 @@ variable "ssh_key_name" {
 }
 
 variable "iam_role_name" {
+  type = string
+}
+
+variable "secgrp_name" {
   type = string
 }
 
